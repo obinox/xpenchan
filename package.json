@@ -1,14 +1,16 @@
 {
     "name": "mochimochi",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "",
     "main": "index.js",
     "type": "module",
     "scripts": {
         "start": "node .",
         "deploy": "node deploy-commands.js",
+        "deploy:start": "npm run deploy && npm run start",
         "test": "echo \"Error: no test specified\" && exit 1"
-      },    "keywords": [],
+    },
+    "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
