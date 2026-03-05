@@ -1,0 +1,50 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Dependencies
+node_modules
+package-lock.json
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+docs/
+
+# GitHub
+.github/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
+dist/
+build/

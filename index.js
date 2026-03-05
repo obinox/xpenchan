@@ -5,18 +5,17 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 // --- 전역 오류 처리 ---
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('처리되지 않은 프로미스 거부:', promise, '이유:', reason);
+process.on("unhandledRejection", (reason, promise) => {
+    console.error("처리되지 않은 프로미스 거부:", promise, "이유:", reason);
     // 프로덕션 환경에서는 여기에 오류 로깅 서비스를 연동하는 것이 좋습니다.
 });
 
-process.on('uncaughtException', (error) => {
-    console.error('잡히지 않은 예외:', error);
+process.on("uncaughtException", (error) => {
+    console.error("잡히지 않은 예외:", error);
     // uncaughtException이 발생하면 애플리케이션 상태가 불안정할 수 있으므로,
     // 로깅 후에는 프로세스를 재시작하는 것이 가장 안전한 방법입니다.
     // 여기서는 일단 로깅만 하여 봇이 죽는 것을 방지합니다.
 });
-
 
 // --- Client and Command Setup ---
 const client = new Client({
@@ -45,6 +44,7 @@ for (const file of commandFiles) {
 // Ready Event
 client.once("clientReady", () => {
     console.log(`Ready! Logged in as ${client.user.tag}`);
+    global.botReady = true;
 });
 
 // Slash Command Handler
@@ -122,7 +122,8 @@ async function onReaction(reaction, user, add) {
             try {
                 await reaction.remove();
             } catch (error) {
-                if (error.code !== 10008) { // Unknown Message 오류는 무시
+                if (error.code !== 10008) {
+                    // Unknown Message 오류는 무시
                     console.error("유효하지 않은 반응을 제거하는 데 실패했습니다:", error);
                 }
             }
@@ -136,7 +137,6 @@ async function onReaction(reaction, user, add) {
     const member = await guild.members.fetch(user.id).catch(() => null);
     if (!member) return;
 
-
     // 8. 역할 추가 또는 제거 처리
     try {
         if (add) {
@@ -145,7 +145,7 @@ async function onReaction(reaction, user, add) {
         } else {
             // 사용자가 반응을 제거했으므로 역할을 회수합니다.
             await member.roles.remove(roleId);
-            
+
             // 유지보수: 봇이 설정한 반응이 사용자에 의해 모두 제거된 경우, 봇이 다시 추가
             const reactionCount = message.reactions.cache.get(emoji.id ?? emoji.name)?.count ?? 0;
             if (reactionCount === 0) {
@@ -163,7 +163,6 @@ async function onReaction(reaction, user, add) {
         }
     }
 }
-
 
 client.on("messageReactionAdd", (reaction, user) => onReaction(reaction, user, true));
 
