@@ -175,20 +175,40 @@ client.on("guildMemberAdd", async (member) => {
         const data = await fsPromises.readFile(configPath, "utf-8");
         const config = JSON.parse(data);
 
+        // 자동 역할 부여
         if (config.autoRole) {
             const role = member.guild.roles.cache.get(config.autoRole);
             if (role) {
-                await member.roles.add(role);
-                console.log(`Assigned auto-role '${role.name}' to ${member.user.tag}`);
+                try {
+                    await member.roles.add(role);
+                    console.log(`Assigned auto-role '${role.name}' to ${member.user.tag}`);
+                } catch (error) {
+                    console.error(`Failed to assign auto-role to ${member.user.tag}:`, error);
+                }
             } else {
                 console.error(`Auto-role with ID '${config.autoRole}' not found.`);
+            }
+        }
+
+        // 자동 닉네임 변경
+        if (config.autoRename && config.autoRename.enabled && config.autoRename.nickname) {
+            const { nickname } = config.autoRename;
+            try {
+                if (member.manageable) {
+                    await member.setNickname(nickname);
+                    console.log(`Set auto-nickname '${nickname}' for ${member.user.tag}`);
+                } else {
+                     console.error(`Cannot set nickname for ${member.user.tag}: Insufficient permissions.`);
+                }
+            } catch (error) {
+                console.error(`Failed to set auto-nickname for ${member.user.tag}:`, error);
             }
         }
     } catch (error) {
         if (error.code === "ENOENT") {
             // Config file doesn't exist, which is fine.
         } else {
-            console.error("Error assigning auto-role:", error);
+            console.error("Error processing guildMemberAdd event:", error);
         }
     }
 });

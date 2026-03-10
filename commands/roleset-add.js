@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder, PermissionsBitField, MessageFlags } from "discord.js";
 
 export const data = new SlashCommandBuilder()
-    .setName("add-role")
+    .setName("roleset-add")
     .setDescription("기존 역할 부여 메시지에 이모티콘-역할 쌍을 추가합니다.")
     .addStringOption((option) => option.setName("message-id").setDescription("수정할 역할 부여 메시지의 ID").setRequired(true))
     .addStringOption((option) => option.setName("emoji").setDescription("추가할 이모티콘").setRequired(true))

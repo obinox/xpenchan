@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder, PermissionsBitField, MessageFlags } from "discord.js";
 
 export const data = new SlashCommandBuilder()
-    .setName("setup")
+    .setName("make-roleset")
     .setDescription("이모티콘 반응으로 역할을 부여하는 메시지를 설정합니다.")
     .addStringOption((option) => option.setName("roles").setDescription(`'이모티콘 @역할명' 형식으로 짝을 지어 입력하세요. 예: "👍 @역할1 👎 @역할2"`).setRequired(true))
     .addChannelOption((option) => option.setName("channel").setDescription("메시지를 보낼 채널을 선택하세요. (기본값: 현재 채널)").setRequired(false))
