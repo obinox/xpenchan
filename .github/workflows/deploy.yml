@@ -56,20 +56,20 @@ jobs:
             - name: Config Repo 불러오기
               uses: actions/checkout@v4
               with:
-                  repository: obinox/mochimochi-config
+                  repository: obinox/xpenchan-config
                   ref: main
                   token: ${{ secrets.ACTION_TOKEN }}
-                  path: mochimochi-config
+                  path: xpenchan-config
             - name: Kustomize 준비
               uses: imranismail/setup-kustomize@v2.0.0
             - name: Config Repo 이미지 값 업데이트 (Kustomize)
               run: |
-                  cd mochimochi-config
+                  cd xpenchan-config
                   kustomize edit set image ${{ env.dockerimage_name }}:${{ env.dockerimage_tag }}
                   cat kustomization.yaml
             - name: Config Repo 변경사항 푸시
               run: |
-                  cd mochimochi-config
+                  cd xpenchan-config
                   git config --global user.email "parkjonggu1122@gmail.com"
                   git config --global user.name "obinox"
                   git commit -am "Update image tag"
