@@ -28,7 +28,7 @@ client.commands = new Collection();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const commandsPath = path.join(__dirname, "commands");
-const configPath = path.join(__dirname, "config.json");
+const configPath = process.env.XPENCHAN_CONFIG_PATH || path.join(__dirname, "config.json");
 const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(".js"));
 
 for (const file of commandFiles) {
