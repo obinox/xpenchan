@@ -1,6 +1,7 @@
 import { Client, GatewayIntentBits, Collection, Partials, MessageFlags } from "discord.js";
 import "dotenv/config";
 import fs from "node:fs";
+import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -19,7 +20,7 @@ process.on("uncaughtException", (error) => {
 
 // --- Client and Command Setup ---
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildMembers],
     partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.User],
 });
 
@@ -27,6 +28,7 @@ client.commands = new Collection();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const commandsPath = path.join(__dirname, "commands");
+const configPath = path.join(__dirname, "config.json");
 const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(".js"));
 
 for (const file of commandFiles) {
@@ -95,7 +97,7 @@ async function onReaction(reaction, user, add) {
     const { message, emoji } = reaction;
 
     // 3. 역할 부여 메시지인지 확인
-    if (message.author.id !== client.user.id || !message.embeds[0] || message.embeds[0].footer?.text !== "모찌모찌 봇") {
+    if (message.author.id !== client.user.id || !message.embeds[0] || message.embeds[0].footer?.text !== "엑펜쨩봇") {
         return;
     }
 
@@ -167,6 +169,29 @@ async function onReaction(reaction, user, add) {
 client.on("messageReactionAdd", (reaction, user) => onReaction(reaction, user, true));
 
 client.on("messageReactionRemove", (reaction, user) => onReaction(reaction, user, false));
+
+client.on("guildMemberAdd", async (member) => {
+    try {
+        const data = await fsPromises.readFile(configPath, "utf-8");
+        const config = JSON.parse(data);
+
+        if (config.autoRole) {
+            const role = member.guild.roles.cache.get(config.autoRole);
+            if (role) {
+                await member.roles.add(role);
+                console.log(`Assigned auto-role '${role.name}' to ${member.user.tag}`);
+            } else {
+                console.error(`Auto-role with ID '${config.autoRole}' not found.`);
+            }
+        }
+    } catch (error) {
+        if (error.code === "ENOENT") {
+            // Config file doesn't exist, which is fine.
+        } else {
+            console.error("Error assigning auto-role:", error);
+        }
+    }
+});
 
 // --- Login ---
 client.login(process.env.DISCORD_TOKEN);

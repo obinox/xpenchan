@@ -5,7 +5,7 @@ on:
         branches: ["main"]
 env:
     dockerimage_tag: ${{ github.sha }}
-    dockerimage_name: obinox/mochimochi
+    dockerimage_name: obinox/xpenchan
 jobs:
     build:
         runs-on: ubuntu-latest

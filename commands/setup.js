@@ -50,7 +50,7 @@ export async function execute(interaction) {
     }
 
     // 3. 임베드 생성
-    const embed = new EmbedBuilder().setTitle(title).setDescription(description).setColor(0x77cedc).setFooter({ text: "모찌모찌 봇" });
+    const embed = new EmbedBuilder().setTitle(title).setDescription(description).setColor(0x77cedc).setFooter({ text: "엑펜쨩봇" });
 
     try {
         // 4. 메시지 전송 및 반응 추가
